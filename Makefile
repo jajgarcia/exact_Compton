@@ -27,6 +27,9 @@
 #
 fc=gfortran
 flags=-O3
+libs = -L/Users/gullo/Software/heasoft-6.28/x86_64-apple-darwin18.7.0/lib/ \
+       -lXSFunctions -lcfitsio -lXSModel -lXSUtil -lXS
+
 #flags=-march=native -ffast-math -funroll-loops -O3 -finline-limit=600
 #flags= -O3 -fbounds-check 
 #
@@ -42,6 +45,7 @@ myobjts= $(mysrc)/bk2.o                 \
          $(mysrc)/gaulegf.o           	\
          $(mysrc)/probab.o           	\
          $(mysrc)/scattxs.o             \
+	 $(mysrc)/write_fits.o          \
          $(mysrc)/super_Compton_RF.o    \
 
 
@@ -55,11 +59,11 @@ $(myobjts): %.o: %.f
 
 # Clean all objects
 clean:
-	rm $(mysrc)/*.o
-	rm $(exec)
+	rm -rf $(mysrc)/*.o $(mysrc)/*~
+	rm -rf $(exec)
 
 all:
-	rm $(exec)
+	rm -rf $(exec)
 	make $(exec)
 
 # Tue Dec 18 14:13:06 EST 2007
