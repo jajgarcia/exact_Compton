@@ -82,6 +82,9 @@ c.......
       parameter ( nsize = 32 )
       dimension xj(nsize),aj(nsize)
       data pi/3.141592654d0/
+c.......  The following gives nodes and weights of the 32-point
+c.......  Gauss-Laguerre quadrature for integration over electron
+c.......  Lorenz factor.
 c.......  tables: XJ - nodes, AJ - weights.
       data (xj(i),aj(i),i=1,nsize)/0.044489366d0,1.09218342d-1,0.2345261
      *1d0,2.10443108d-1,0.576884629d0,2.352132297d-1,1.07244875d0,1.9590
@@ -104,9 +107,17 @@ c.......
       gam_star=(eps-eps1+q_up*dsqrt(1+2.d0/q_down))/2.d0
       integ=0.d0
 c.......
+c.......  Integration over gamma (Lorenz factor)
    11 do 16 j=1,nsize
          zfe=fexact(eps,eps1,costh,xj(j)/x+gam_star)
          integ=integ+zfe*aj(j)
+c.......
+c.......  In the following the final expression corresponds to Eq.13 of
+c.......  Madej et al. (2017), where the profile is multiplied by the
+c.......  factor eps1/eps*exp(eps-eps1) related to the detailed balance
+c.......  condition.
+c.......  Note: the unity in the exponent below accounts for the Bessel
+c.......  function being scaled by exp(x). See bk2.f for the details.
    16 continue
       integ=integ*dexp((1-gam_star+eps-eps1)*x)
       profil=3.d0/32.d0/pi/bk2(x)*integ     *eps1/eps
