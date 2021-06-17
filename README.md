@@ -25,4 +25,4 @@ The output of this code is used by the XILLVER model.
      Authors: Javier Garcia (javier@caltech.edu)
               Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
                 (see Garcia et al. 2020 in prep)
-	      With routines provided by J. Marek and A. Rozanska (see Madej et al. 2017).
+	      With routines provided by J. Madej and A. Rozanska (see Madej et al. 2017).
