@@ -1,5 +1,6 @@
-      subroutine super_Compton_RF(itrans, theta, nmaxp, wp, df, skn,  !inp
-     1                            mgi, smit, agt)                     !inp
+!-------------------------------------------------------------------------------------------------      
+      subroutine super_Compton_RF_fits(itrans, theta, nmaxp, wp, df,
+     & skn,  mgi, smit, agt) 
 c
 c     This routine writes a file with the super redistribution function (SRF) for Compton 
 c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is 
@@ -40,23 +41,39 @@ c
       real*8 prob(nmaxp,nmaxp), srf
       real*8 mec2, ecen, isp, ikbol, temp
       integer jj, kk, point(nmaxp), indices(nmaxp,nmaxp)
+      integer :: n 
+      character (len=200) filename
+! Added by Gullo
+c$$$  double precision, allocatable :: srf_arr(:)
+      integer          :: unit, status
+      double precision :: srf_arr(nmaxp)
+c Initialize status
+      status=0
 c
       ikbol   = 1.16d4      ! inverse of kbol (K * ev-1)
       mec2  = 5.11d5        ! m_e c^2 (eV)
       isp = 0.5641895835d0  ! 1/sqrt(pi)
       limit = 1.d-3         ! Limit for the redistribution function
 c
-100   format(2i8)
-101   format(i8,ES16.8E3)
-102   format(i8,ES16.8E3,i8,ES16.8E3)
-103   format(2i8,2ES16.8E3)
-c
-c     Write the first line in output: number of temps and final energies
-      open(10, status = 'unknown', file = 'srf.txt')               ! Set of SRF's for all temps
-      write(10,100)itrans, nmaxp
+c$$$100   format(2i8)
+c$$$101   format(i8,ES16.8E3)
+c$$$102   format(i8,ES16.8E3,i8,ES16.8E3)
+c$$$103   format(2i8,2ES16.8E3)
 c
 c     Check1 is to ensure photon number is conserved in scatterings
-c
+
+      filename = 'table.fits' !name of the fits file
+      n = 1 ! column number of the fits file
+
+      call create_fits(filename) !create the fits file
+
+!crate and fill the first extension with temperature and energy
+      call write_param(itrans, nmaxp, theta, wp, filename)
+
+!append and other extension (3rd) to store the SRF
+!IMPORTANT: this routine leaves the fits file opened      
+      call add_HDU(itrans, nmaxp, filename, unit)
+      
       do 1001 iz = 1, itrans
          do kk=1,nmaxp
             point(kk)=0
@@ -65,8 +82,8 @@ c
             enddo
          enddo
 c
-         temp = theta(iz)*ikbol*mec2                              ! temperature in K
-c
+         temp = theta(iz)*ikbol*mec2          ! temperature in K
+c     
          do 989 np = 1, nmaxp
 c
             check1(np) = 0.d0
@@ -102,38 +119,49 @@ c           Integration to the right
      1                     prob(jj,np))
                if (prob(jj,np).ge.pmin)then                             ! Stop at pmin
                    check1(np) = check1(np) + df(jj) * prob(jj,np)       ! Normalization
-                   indices(jj,kk)=np
+                   Indices(jj,kk)=np
                    point(jj)=kk
                else
                    exit
                endif
             enddo
 989      enddo
-c
-c
-c
-c        Write down the SRF's for each temperature and final energy
-c        On an ascii file at the moment, it should be into a FITS file
-c        Also, we don't really need all the indices, but it's ok for now
-c        Now also writes the precalculated scattering cross section skn
-c
-         write(10,101)iz,temp
-c
-         do jj = 1, nmaxp
-             write(10,102)jj,wp(jj),point(jj),skn(jj,iz)
-             do kk = 1, point(jj)
-               np=indices(jj,kk)
-               srf = prob(jj,np)*skn(np,iz)*df(np)/wp(np)/check1(np)
-               write(10,103)kk,np,wp(np),srf
-             enddo
+
+         
+!     From here crated by Gullo Dec 2020
+!     Once it calculates the srf it writes directly the fits file
+!     It needs to differentiate the first call, where it writes the extension from all the other calls 
+      do jj = 1, nmaxp
+!Allocate the array to store the SRF values, this changes for every combination  of initial energy and temperature 
+c$$$         allocate(srf_arr(point(jj)))
+         do kk = 1, point(jj)
+            np=indices(jj,kk)
+            srf = prob(jj,np)*skn(np,iz)*df(np)/wp(np)/check1(np)
+!save the SRF array in order to pass it to the fits file routine   
+            srf_arr(kk) = srf
          enddo
+            call add_row_HDU(n, nmaxp, point(jj), indices(jj,1),
+     &       skn(jj,iz), srf_arr, unit)
+         !deallocate the SRF array for the next call
+c$$$         deallocate(srf_arr) 
+         n = n + 1 ! increment the number of column 
+      enddo
+               
 c
-1001  continue
+1001  continue      
 c
-      close(10)
+     
+c The FITS file must always be closed before exiting the program. 
+c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
+      write(*,*) 'final status', status
+      call ftclos(unit, status)
+      write(*,*) 'final status', status
+      call ftfiou(unit, status)
+      write(*,*) 'final status', status
+      if (status .gt. 0) then
+         call printerror(status)
+c$$$         write(*,*) 'end file'
+      endif
       return
       end subroutine
-
-
-
 

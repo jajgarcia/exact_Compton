@@ -39,14 +39,15 @@ code=$(name).f
 exec=$(name).x
 mysrc=my-routines
 
-myobjts= $(mysrc)/bk2.o                 \
-         $(mysrc)/crsexact.o            \
-         $(mysrc)/enegrd.o              \
-         $(mysrc)/gaulegf.o           	\
-         $(mysrc)/probab.o           	\
-         $(mysrc)/scattxs.o             \
-	 $(mysrc)/write_fits.o          \
-         $(mysrc)/super_Compton_RF.o    \
+myobjts= $(mysrc)/bk2.o                      \
+         $(mysrc)/crsexact.o                 \
+         $(mysrc)/enegrd.o                   \
+         $(mysrc)/gaulegf.o           	     \
+         $(mysrc)/probab.o           	     \
+         $(mysrc)/scattxs.o                  \
+	 $(mysrc)/write_fits.o               \
+         $(mysrc)/super_Compton_RF.o         \
+         $(mysrc)/super_Compton_RF_fits.o    \
 
 
 # Compile xstar with all subroutines
