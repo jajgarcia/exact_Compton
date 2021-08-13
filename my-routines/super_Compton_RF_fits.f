@@ -132,8 +132,6 @@ c           Integration to the right
 !     Once it calculates the srf it writes directly the fits file
 !     It needs to differentiate the first call, where it writes the extension from all the other calls 
       do jj = 1, nmaxp
-!Allocate the array to store the SRF values, this changes for every combination  of initial energy and temperature 
-c$$$         allocate(srf_arr(point(jj)))
          do kk = 1, point(jj)
             np=indices(jj,kk)
             srf = prob(jj,np)*skn(np,iz)*df(np)/wp(np)/check1(np)
@@ -141,10 +139,8 @@ c$$$         allocate(srf_arr(point(jj)))
             srf_arr(kk) = srf
          enddo
             call add_row_HDU(n, nmaxp, point(jj), indices(jj,1),
-     &       skn(jj,iz), srf_arr, unit)
-         !deallocate the SRF array for the next call
-c$$$         deallocate(srf_arr) 
-         n = n + 1 ! increment the number of column 
+     &        skn(jj,iz), srf_arr, unit)
+            n = n + 1           ! increment the row number
       enddo
                
 c

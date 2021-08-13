@@ -201,10 +201,8 @@ c-----------------------------------------------------------------------
       implicit none
       
       integer          :: unit, n, nmaxp, out_en_dim, out_en_ind
-c$$$      double precision :: srf(out_en_dim)
       double precision :: srf(nmaxp)
       double precision :: kn_cross(1)
-c$$$      character* (*) filename
       integer status,readwrite,hdutype, blocksize
       integer colnum,rownum
       
@@ -232,7 +230,6 @@ C  Move to the last (3nd) HDU in the file (the paameter values table).
      &       out_en_dim, status)
             colnum = 4
 !Fill the column with arrays of different size
-c$$$            nelem  = out_en_dim
             call ftpcld(unit, colnum, rownum, 1, out_en_dim,
      &           srf, status)
 
