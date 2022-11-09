@@ -9,7 +9,7 @@ c-----------------------------------------------------------------------
       logical simple,extend
       integer bitpix,naxis,naxes(1)
 
-!Don't touch!
+!Dont touch!
 c Initialize status
       status=0
 c Delete the file if it already exists

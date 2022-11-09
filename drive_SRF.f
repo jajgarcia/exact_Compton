@@ -1,5 +1,5 @@
       program drive_SRF
-c........    
+      use omp_lib   
 c     Driving program for the writting of the Super Redistribution Function SRF
 c     due to Compton scattering (see more details in super_Compton_RF.f).
 c     The output of this code is used by the XILLVER code. 
@@ -32,12 +32,13 @@ c
 c........    
       implicit none
       integer nmaxp, itrans, mgi, ii
-      parameter (nmaxp=500, itrans=70, mgi=3000)
+      parameter (nmaxp=500, itrans=70, mgi=8)
       double precision pemin, pemax, pemax2
       double precision theta(itrans), wp(nmaxp), df(nmaxp)
       double precision skn(nmaxp,itrans)
       double precision ikbol, ergsev, mec2, pi
       double precision smit(mgi), agt(mgi)
+      double precision smit1(mgi+2), agt1(mgi+2)
       double precision tini, tfin, tcpu, temp
 c
 c     Get current time
@@ -69,10 +70,24 @@ c     Calculate the Compton Cross Section
 c
 c     Get the Gaussian quadratures for angular integration
       call gaulegf(-1.d0, 1.d0, smit, agt, mgi)
-c
+c      print *,smit
+c      smit1(1)=-1.d0
+c      smit1(mgi+2)=1.d0
+c      agt1(1)=smit(1)-(-1.d0)
+c      agt1(mgi+2)=1.d0-smit(mgi)
+c      do ii=1,mgi
+c            smit1(ii+1)=smit(ii)
+c            agt1(ii+1)=agt(ii)
+c      enddo
+c      agt1(2)=agt1(2)-agt1(1)
+c      agt1(mgi+1)=agt1(mgi+1)- agt1(mgi+2)
+c      print*,agt1
+c      print*,smit1
 c     Produce file with all SRF's
 c$$$      call super_Compton_RF(itrans, theta, nmaxp, wp, df, skn,
 c$$$     1     mgi, smit, agt)
+c      call super_Compton_RF_fits(itrans, theta, nmaxp, wp, df, skn,
+c     1     mgi+2, smit1, agt1)
       call super_Compton_RF_fits(itrans, theta, nmaxp, wp, df, skn,
      1     mgi, smit, agt)
       

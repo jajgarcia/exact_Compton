@@ -1,7 +1,8 @@
 !-------------------------------------------------------------------------------------------------      
       subroutine super_Compton_RF_fits(itrans, theta, nmaxp, wp, df,
      & skn,  mgi, smit, agt) 
-c
+      implicit none
+      include 'omp_lib.h'
 c     This routine writes a file with the super redistribution function (SRF) for Compton 
 c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is 
 c     defined for a set of initial photon energies Ei as:
@@ -33,15 +34,15 @@ c
 c     Requires:
 c         probab.f: Routine for the RF calculation
 c
-      implicit none
+
       integer itrans, nmaxp, mgi, iz, np
       real*8 theta(itrans), wp(nmaxp), df(nmaxp), skn(nmaxp,itrans)
       real*8 smit(mgi), agt(mgi)
-      real*8 check1(nmaxp), limit, pmin
+      real*8 check1(nmaxp), limit, pmin, pmax(nmaxp)
       real*8 prob(nmaxp,nmaxp), srf
-      real*8 mec2, ecen, isp, ikbol, temp
-      integer jj, kk, point(nmaxp), indices(nmaxp,nmaxp)
-      integer :: n 
+      real*8 mec2, ecen, isp, ikbol, temp(itrans),check
+      integer jj, kk, point(nmaxp), indices(nmaxp,nmaxp),ind_arr(nmaxp)
+      integer :: n ,indmax(nmaxp)
       character (len=200) filename
 ! Added by Gullo
 c$$$  double precision, allocatable :: srf_arr(:)
@@ -67,84 +68,106 @@ c     Check1 is to ensure photon number is conserved in scatterings
 
       call create_fits(filename) !create the fits file
 
+      do iz=1, itrans
+            temp(iz) = theta(iz)*ikbol*mec2
+c            print *,temp(iz)
+      enddo
 !crate and fill the first extension with temperature and energy
-      call write_param(itrans, nmaxp, theta, wp, filename)
+      call write_param(itrans, nmaxp, temp, wp, filename)
 
 !append and other extension (3rd) to store the SRF
 !IMPORTANT: this routine leaves the fits file opened      
       call add_HDU(itrans, nmaxp, filename, unit)
-      
-      do 1001 iz = 1, itrans
+      do iz = 1, itrans
          do kk=1,nmaxp
             point(kk)=0
+            pmax(kk)=0.d0
+            check1(kk) = 0.d0
+            indmax(kk)=0
             do np = 1, nmaxp
                prob(np,kk) = 0.d0
+               indices(np,kk)=0
             enddo
          enddo
 c
-         temp = theta(iz)*ikbol*mec2          ! temperature in K
-c     
-         do 989 np = 1, nmaxp
-c
-            check1(np) = 0.d0
-c           Approx energy of the probability maximum
+c         temp = theta(iz)*ikbol*mec2          ! temperature in K
+         do np = 1, nmaxp
             ecen = wp(np)
-c           Probability at ecen
-            call probab(temp,ecen/mec2,ecen/mec2,mgi,smit,agt,
-     1                  prob(np,np))
-            check1(np) = check1(np) + df(np) * prob(np,np)              ! Normalization
-            pmin = prob(np,np)*limit
-            kk = point(np)+1
-            indices(np,kk)=np
-            point(np)=kk
-c
-c           Integration to the left
-            do jj = np-1, 1, -1
-               kk=point(jj)+1
-               call probab(temp,wp(jj)/mec2,wp(np)/mec2,mgi,smit,agt,
-     1                     prob(jj,np))
-               if (prob(jj,np).ge.pmin)then                             ! Stop at pmin
-                   check1(np) = check1(np) + df(jj) * prob(jj,np)       ! Normalization
-                   indices(jj,kk)=np
-                   point(jj)=kk
-               else
-                   exit
+c$omp parallel num_threads(30)
+c$omp& shared(iz,wp,prob,point,pmax,nmaxp,np,ecen,temp,mgi,smit,
+c$omp& agt,mec2,indmax)
+c$omp& private(jj)
+c$omp do
+            do jj=1,nmaxp
+               call probab(temp(iz),wp(jj)/mec2,ecen/mec2,mgi,smit
+     1          ,agt,prob(jj,np))
+               if(prob(jj,np).gt.pmax(np)) then
+                  pmax(np) = prob(jj,np)
+                  indmax(np)=jj
                endif
             enddo
-c
-c           Integration to the right
-            do jj = np+1, nmaxp
-               kk=point(jj)+1
-               call probab(temp,wp(jj)/mec2,wp(np)/mec2,mgi,smit,agt,
-     1                     prob(jj,np))
-               if (prob(jj,np).ge.pmin)then                             ! Stop at pmin
-                   check1(np) = check1(np) + df(jj) * prob(jj,np)       ! Normalization
-                   Indices(jj,kk)=np
-                   point(jj)=kk
-               else
-                   exit
-               endif
+c$omp end do
+c$omp end parallel
+         if(pmax(np).le.0.d0) then
+            print *,np
+         endif
+         enddo
+         do np=1,nmaxp
+            check=0.d0
+            do jj=indmax(np),1,-1
+                  kk=point(jj)+1
+                  if(prob(jj,np).ge.(pmax(np)*limit))then
+                        indices(jj,kk)=np
+                        check=check+df(jj)*prob(jj,np)
+                        point(jj)=kk
+                  else
+                        exit
+                  endif
             enddo
-989      enddo
+
+            do jj=indmax(np)+1,nmaxp
+                  kk=point(jj)+1
+                  if(prob(jj,np).ge.(pmax(np)*limit))then
+                        indices(jj,kk)=np
+                        check=check+df(jj)*prob(jj,np)
+                        point(jj)=kk
+                  else
+                        exit
+                  endif
+
+            enddo
+            check1(np)=check
+         enddo
 
          
 !     From here crated by Gullo Dec 2020
 !     Once it calculates the srf it writes directly the fits file
 !     It needs to differentiate the first call, where it writes the extension from all the other calls 
       do jj = 1, nmaxp
+c         if (jj.lt.300)then
+c         print *,"*****",jj
+c         do kk=1,point(jj)
+c            print*,indices(jj,kk)
+c         enddo
+c         endif
+         do kk=1,nmaxp
+            srf_arr(kk) = 0.d0
+c            ind_arr(kk) = 0
+         enddo
          do kk = 1, point(jj)
             np=indices(jj,kk)
             srf = prob(jj,np)*skn(np,iz)*df(np)/wp(np)/check1(np)
 !save the SRF array in order to pass it to the fits file routine   
             srf_arr(kk) = srf
+c            ind_arr(kk) = np
          enddo
-            call add_row_HDU(n, nmaxp, point(jj), indices(jj,1),
+         call add_row_HDU(n, nmaxp, point(jj), indices(jj,1),
      &        skn(jj,iz), srf_arr, unit)
             n = n + 1           ! increment the row number
       enddo
                
-c
-1001  continue      
+      print *,iz
+      enddo      
 c
      
 c The FITS file must always be closed before exiting the program. 
