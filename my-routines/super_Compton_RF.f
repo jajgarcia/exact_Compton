@@ -28,7 +28,7 @@ c         agt: Array (mgi) weights
 c
 c     Output arguments:
 c         None
-c
+c         
 c     Requires:
 c         probab.f: Routine for the RF calculation
 c
