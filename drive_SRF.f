@@ -38,7 +38,6 @@ c........
       double precision skn(nmaxp,itrans)
       double precision ikbol, ergsev, mec2, pi
       double precision smit(mgi), agt(mgi)
-      double precision smit1(mgi+2), agt1(mgi+2)
       double precision tini, tfin, tcpu, temp
 c
 c     Get current time
