@@ -1,6 +1,6 @@
 !     subroutines to write the fits file
 c-----------------------------------------------------------------------
-      ! create fits file with one extension and  columns 
+      ! create fits file with one extension and  columns
       subroutine create_fits(filename)
       implicit none
       character* (*) filename
@@ -8,18 +8,21 @@ c-----------------------------------------------------------------------
       integer status,unit,blocksize
       logical simple,extend
       integer bitpix,naxis,naxes(1)
-
 !Dont touch!
+
 c Initialize status
       status=0
-c Delete the file if it already exists
+c Delete the file if it already exists<<<<<<< dev_angle
+12
+ 
+
       call deletefile(filename,status)
       if( status .gt. 0 )call printerror(status)
 c Get an unused Logical Unit Number to use to open the FITS file.
       call ftgiou(unit,status)
 c Create the new empty FITS file
       blocksize=1
-      call ftinit(unit,filename,blocksize,status)      
+      call ftinit(unit,filename,blocksize,status)
 c Initialize parameters about the FITS primary image - need image for structure
       simple=.true.
       bitpix=16
@@ -28,7 +31,7 @@ c Initialize parameters about the FITS primary image - need image for structure
       extend=.true.
 c Write the required header keywords to the file
       call ftphpr(unit,simple,bitpix,naxis,naxes,0,1,extend,status)
-c The FITS file must always be closed before exiting the program. 
+c The FITS file must always be closed before exiting the program.
 c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
       call ftclos(unit, status)
       call ftfiou(unit, status)
@@ -37,16 +40,13 @@ c Check for any error, and if so print out error messages.
       return
       end
 c-----------------------------------------------------------------------
-
-
 c-----------------------------------------------------------------------
-      ! create fits file with one extension and  columns 
+      ! create fits file with one extension and  columns
       subroutine write_param(temp_dim, en_dim, temp, en, filename)
       implicit none
       integer          :: temp_dim, en_dim
       double precision :: temp(temp_dim), en(en_dim)
       character* (*) filename
-
 !     Internal variables
       integer status,unit,blocksize
       integer rownum,readwrite,colnum,tfields
@@ -54,12 +54,11 @@ c-----------------------------------------------------------------------
       integer,parameter :: coldim = 2
       character (LEN=16) ttype(coldim),tform(coldim),tunit(coldim)
       integer nrows, varidat
-
 c$$$! inverse of kbol (K * ev-1)
 c$$$      double precision, parameter :: ikbol   = 1.16d4
 c$$$! m_e c^2 (eV)
 c$$$  double precision, parameter :: mec2  = 5.11d5
-      
+
 c Initialize status
       status=0
       blocksize = 1
@@ -67,25 +66,22 @@ c Get an unused Logical Unit Number to use to open the FITS file.
       call ftgiou(unit,status)
 c Open the FITS file, with write access.
       readwrite=1
-      call ftopen(unit,filename,readwrite,blocksize,status)      
+      call ftopen(unit,filename,readwrite,blocksize,status)
 c Append/create a new empty HDU onto the end of the file and move to it.
       call ftcrhd(unit,status)
-
       ttype(1) = 'TEMP'
       ttype(2) = 'ENERGIES'
-
       write(name, '(I4,A1)') temp_dim, 'D'
       tform(1) = trim(name)
-      
+
       write(name, '(I4,A1)') en_dim, 'D'
       tform(2) = trim(name)
       write(*,*) tform(1) , tform(2)
 c$$$      tform(1) = '70D'
 c$$$      tform(2) = '500D'
-
       tunit(1) = 'kT/mec2'
       tunit(2) = 'eV'
-    
+
 c Define parameters for the binary table (see the above data statements)
       tfields  = coldim
       nrows    = 1
@@ -97,8 +93,7 @@ c rows and columns in the table, and the TTYPE, TFORM, and TUNIT arrays
 c give the column name, format, and units, respectively of each column.
       call ftphbn(unit,nrows,tfields,ttype,tform,tunit,
      &     extname,varidat,status)
-
-!     Filling the columns 
+!     Filling the columns
             rownum = 1
             colnum = 1
             call ftpcld(unit, colnum, rownum, 1, temp_dim,
@@ -106,13 +101,11 @@ c give the column name, format, and units, respectively of each column.
             colnum = 2
             call ftpcld(unit, colnum, rownum, 1, en_dim,
      &       en, status)
-
-
 c$$$c Write keywords to this extension
 c$$$!ftpkyj to write integer
 c$$$!ftpkye to write real (4)
-c$$$!ftpkyd to write real (8)       
-c The FITS file must always be closed before exiting the program. 
+c$$$!ftpkyd to write real (8)
+c The FITS file must always be closed before exiting the program.
 c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
       call ftclos(unit, status)
       call ftfiou(unit, status)
@@ -124,35 +117,30 @@ c-----------------------------------------------------------------------
 c-----------------------------------------------------------------------
 ! Add one HDU in the 3rd position
 !IMPORTANT: this routine leaves the fits file opened
-      
+
       subroutine add_HDU(temp_dim, en_dim, filename, unit)
       implicit none
-
       integer :: unit, temp_dim, en_dim
       character* (*) filename
-      
+
 !     Internal variables
       integer status, blocksize, readwrite, tfields
       character (len=16) extname
       integer,parameter :: coldim = 4
       character (LEN=16) ttype(coldim),tform(coldim),tunit(coldim)
       integer i, nrows, varidat
-
-
       ttype(1) = 'KN_CROSS'
       ttype(2) = 'OUT_IND'
       ttype(3) = 'OUT_NUM'
       ttype(4) = 'SRF'
-      
+
       tform(1) = '1D'
       tform(2) = '1I'
       tform(3) = '1I'
       tform(4) = '1PD'
-
       do i = 1, coldim
          tunit(i) = ''
       enddo
-
 c Initialize status
       status=0
       blocksize = 1
@@ -160,10 +148,10 @@ c Get an unused Logical Unit Number to use to open the FITS file.
       call ftgiou(unit,status)
 c Open the FITS file, with write access.
       readwrite=1
-      call ftopen(unit,filename,readwrite,blocksize,status)      
+      call ftopen(unit,filename,readwrite,blocksize,status)
 c Append/create a new empty HDU onto the end of the file and move to it.
       call ftcrhd(unit,status)
-    
+
 c Define parameters for the binary table (see the above data statements)
       tfields  = coldim
       nrows    = temp_dim * en_dim
@@ -175,13 +163,11 @@ c rows and columns in the table, and the TTYPE, TFORM, and TUNIT arrays
 c give the column name, format, and units, respectively of each column.
       call ftphbn(unit,nrows,tfields,ttype,tform,tunit,
      &     extname,varidat,status)
-
-
 c$$$c Write keywords to this extension
 c$$$!ftpkyj to write integer
 c$$$!ftpkye to write real (4)
-c$$$!ftpkyd to write real (8)       
-c$$$c The FITS file must always be closed before exiting the program. 
+c$$$!ftpkyd to write real (8)
+c$$$c The FITS file must always be closed before exiting the program.
 c$$$c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
 c$$$      call ftclos(unit, status)
 c$$$      call ftfiou(unit, status)
@@ -193,19 +179,32 @@ c Check for any error, and if so print out error messages.
       end
 c-----------------------------------------------------------------------
 
-      
-
 c-----------------------------------------------------------------------
       subroutine add_row_HDU(n, nmaxp, out_en_dim, out_en_ind,
      & kn_cross, srf, unit)
       implicit none
-      
+
       integer          :: unit, n, nmaxp, out_en_dim, out_en_ind
       double precision :: srf(nmaxp)
       double precision :: kn_cross(1)
       integer status,readwrite,hdutype, blocksize
       integer colnum,rownum
-      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @@ -232,7 +230,6 @@ subroutine add_row_HDU(n, nmaxp, out_en_dim, out_en_ind,
+
 c Initialize status
       status=0
 c$$$      blocksize = 1
@@ -216,8 +215,7 @@ c$$$      readwrite=1
 c$$$      call ftopen(unit,filename,readwrite,blocksize,status)
 C  Move to the last (3nd) HDU in the file (the paameter values table).
       call ftmahd(unit,3,hdutype,status)
-
-!     Filling the columns 
+!     Filling the columns
             rownum = n
             colnum = 1
             call ftpcld(unit, colnum, rownum, 1, 1,
@@ -232,8 +230,7 @@ C  Move to the last (3nd) HDU in the file (the paameter values table).
 !Fill the column with arrays of different size
             call ftpcld(unit, colnum, rownum, 1, out_en_dim,
      &           srf, status)
-
-c$$$cThe FITS file must always be closed before exiting the program. 
+c$$$cThe FITS file must always be closed before exiting the program.
 c$$$c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
 c$$$      call ftclos(unit, status)
 c$$$      call ftfiou(unit, status)
@@ -245,25 +242,30 @@ c Check for any error, and if so print out error messages.
       return
       end
 c-----------------------------------------------------------------------
-
-
 c-----------------------------------------------------------------------
       subroutine deletefile(filename,status)
 C  A simple little routine to delete a FITS file
       implicit none
       integer status,unit,blocksize
       character*(*) filename
+
+
+
+
+
+
+
+
+
+
 C  Simply return if status is greater than zero
       if (status .gt. 0)return
-
 C  Get an unused Logical Unit Number to use to open the FITS file
       call ftgiou(unit,status)
-
 C  Try to open the file, to see if it exists
       call ftopen(unit,filename,1,blocksize,status)
-
       if (status .eq. 0)then
-C         file was opened;  so now delete it 
+C         file was opened;  so now delete it
           call ftdelt(unit,status)
           !write(*,*)"Deleted a file"
       else if (status .eq. 103)then
@@ -277,12 +279,10 @@ C         there was some other error opening the file; delete the file anyway
           call ftcmsg
           call ftdelt(unit,status)
       end if
-
 C  Free the unit number for later reuse
       call ftfiou(unit, status)
       end
 c-----------------------------------------------------------------------
-
 c-----------------------------------------------------------------------
       subroutine printerror(status)
 C  This subroutine prints out the descriptive text corresponding to the

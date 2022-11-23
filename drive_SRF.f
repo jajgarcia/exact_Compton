@@ -32,7 +32,8 @@ c
 c........    
       implicit none
       integer nmaxp, itrans, mgi, ii
-      parameter (nmaxp=500, itrans=70, mgi=8)
+
+      parameter (nmaxp=5000, itrans=70, mgi=3000)
       double precision pemin, pemax, pemax2
       double precision theta(itrans), wp(nmaxp), df(nmaxp)
       double precision skn(nmaxp,itrans)
@@ -83,13 +84,8 @@ c      agt1(mgi+1)=agt1(mgi+1)- agt1(mgi+2)
 c      print*,agt1
 c      print*,smit1
 c     Produce file with all SRF's
-c$$$      call super_Compton_RF(itrans, theta, nmaxp, wp, df, skn,
-c$$$     1     mgi, smit, agt)
-c      call super_Compton_RF_fits(itrans, theta, nmaxp, wp, df, skn,
-c     1     mgi+2, smit1, agt1)
       call super_Compton_RF_fits(itrans, theta, nmaxp, wp, df, skn,
      1     mgi, smit, agt)
-      
 c
 c     Get current time
       call cpu_time(tfin)

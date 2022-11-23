@@ -1,32 +1,32 @@
       subroutine super_Compton_RF(itrans, theta, nmaxp, wp, df, skn,  !inp
      1                            mgi, smit, agt)                     !inp
 c
-c     This routine writes a file with the super redistribution function (SRF) for Compton 
-c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is 
+c     This routine writes a file with the super redistribution function (SRF) for Compton
+c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is
 c     defined for a set of initial photon energies Ei as:
 c
 c         SRF(T,Ef,Ei) = IRF(Ef,Ei)/N(Ei)*skn(Ei)*dEi/Ei
-c     
+c
 c     where IRF(Ef,Ei) is in fact the inverse redistribution function for the Compton scattering
-c     of a photon from initial energy Ei to final energy Ef; N(Ei) is the normalization to 
-c     ensure photon number conservation; and skn(Ei) is the Klein-Nishina cross section. 
-c     This routine implements the exact Compton RF from Madej et al. (2017). 
-c     The SRF contains all the information needed for the convolution of a given spectrum 
+c     of a photon from initial energy Ei to final energy Ef; N(Ei) is the normalization to
+c     ensure photon number conservation; and skn(Ei) is the Klein-Nishina cross section.
+c     This routine implements the exact Compton RF from Madej et al. (2017).
+c     The SRF contains all the information needed for the convolution of a given spectrum
 c     to account for the Compton scattering at the given temperature.
 c     Only significant values of the SRF are actually written, i.e., when RF > limit.
 c
-c     Input arguments: 
+c     Input arguments:
 c         itrans: Total number of temperatures
 c         theta: Array (itrans) of temperatures in kT/mec2
 c         nmaxp: Total number of energy points
 c         wp: Array (nmaxp) of energies in eV
 c         df: Array (nmaxp) of delta energies in eV
 c         skn: Array (nmaxp) of Kein-Nishina cross sections
-c         mgi: Total number of angles 
+c         mgi: Total number of angles
 c         smit: Array (mgi) Legendre ordinates (angles)
-c         agt: Array (mgi) weights 
+c         agt: Array (mgi) weights
 c
-c     Output arguments: 
+c     Output arguments:
 c         None
 c         
 c     Requires:
@@ -133,7 +133,3 @@ c
       close(10)
       return
       end subroutine
-
-
-
-

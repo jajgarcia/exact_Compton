@@ -26,15 +26,15 @@
 #flags= -O3 -check bounds -fp-model source
 #
 fc=gfortran
+
 #flags=-O3
 #flags=-O3 -fallow-argument-mismatch -fopenmp
 flags=-O3 -fallow-argument-mismatch
 #flags=-Og -fcheck=all -Wextra -fimplicit-none -fbacktrace -fallow-argument-mismatch 
-libs = -L/home/jameson/lib/cfitsio-4.1.0/lib -lcfitsio
-
+libs =-lcfitsio
 
 #flags=-march=native -ffast-math -funroll-loops -O3 -finline-limit=600
-#flags= -O3 -fbounds-check 
+#flags= -O3 -fbounds-check
 #
 #libs= -lcfitsio
 name=drive_SRF
@@ -48,7 +48,7 @@ myobjts= $(mysrc)/bk2.o                      \
          $(mysrc)/gaulegf.o           	     \
          $(mysrc)/probab.o           	     \
          $(mysrc)/scattxs.o                  \
-	 $(mysrc)/write_fits.o               \
+	       $(mysrc)/write_fits.o               \
          $(mysrc)/super_Compton_RF.o         \
          $(mysrc)/super_Compton_RF_fits.o    \
 
@@ -63,11 +63,11 @@ $(myobjts): %.o: %.f
 
 # Clean all objects
 clean:
-	rm -rf $(mysrc)/*.o $(mysrc)/*~
-	rm -rf $(exec)
+	rm $(mysrc)/*.o
+	rm $(exec)
 
 all:
-	rm -rf $(exec)
+	rm $(exec)
 	make $(exec)
 
 # Tue Dec 18 14:13:06 EST 2007

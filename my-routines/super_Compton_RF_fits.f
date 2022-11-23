@@ -1,23 +1,22 @@
-!-------------------------------------------------------------------------------------------------      
+!-------------------------------------------------------------------------------------------------
       subroutine super_Compton_RF_fits(itrans, theta, nmaxp, wp, df,
-     & skn,  mgi, smit, agt) 
-      implicit none
-      include 'omp_lib.h'
-c     This routine writes a file with the super redistribution function (SRF) for Compton 
-c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is 
+     & skn,  mgi, smit, agt)
+c
+c     This routine writes a file with the super redistribution function (SRF) for Compton
+c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is
 c     defined for a set of initial photon energies Ei as:
 c
 c         SRF(T,Ef,Ei) = IRF(Ef,Ei)/N(Ei)*skn(Ei)*dEi/Ei
-c     
+c
 c     where IRF(Ef,Ei) is in fact the inverse redistribution function for the Compton scattering
-c     of a photon from initial energy Ei to final energy Ef; N(Ei) is the normalization to 
-c     ensure photon number conservation; and skn(Ei) is the Klein-Nishina cross section. 
-c     This routine implements the exact Compton RF from Madej et al. (2017). 
-c     The SRF contains all the information needed for the convolution of a given spectrum 
+c     of a photon from initial energy Ei to final energy Ef; N(Ei) is the normalization to
+c     ensure photon number conservation; and skn(Ei) is the Klein-Nishina cross section.
+c     This routine implements the exact Compton RF from Madej et al. (2017).
+c     The SRF contains all the information needed for the convolution of a given spectrum
 c     to account for the Compton scattering at the given temperature.
 c     Only significant values of the SRF are actually written, i.e., when RF > limit.
 c
-c     Input arguments: 
+c     Input arguments:
 c         itrans: Total number of temperatures
 c         theta: Array (itrans) of temperatures in kT/mec2
 c         nmaxp: Total number of energy points
@@ -34,7 +33,7 @@ c
 c     Requires:
 c         probab.f: Routine for the RF calculation
 c
-
+      implicit none
       integer itrans, nmaxp, mgi, iz, np
       real*8 theta(itrans), wp(nmaxp), df(nmaxp), skn(nmaxp,itrans)
       real*8 smit(mgi), agt(mgi)
@@ -67,6 +66,7 @@ c     Check1 is to ensure photon number is conserved in scatterings
       n = 1 ! column number of the fits file
 
       call create_fits(filename) !create the fits file
+
 
       do iz=1, itrans
             temp(iz) = theta(iz)*ikbol*mec2
@@ -171,6 +171,7 @@ c            ind_arr(kk) = np
 c
      
 c The FITS file must always be closed before exiting the program. 
+
 c Any unit numbers allocated with FTGIOU must be freed with FTFIOU.
       write(*,*) 'final status', status
       call ftclos(unit, status)
@@ -183,4 +184,3 @@ c$$$         write(*,*) 'end file'
       endif
       return
       end subroutine
-
