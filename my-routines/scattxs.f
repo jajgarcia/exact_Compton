@@ -6,6 +6,7 @@ c     the Klein-Nishina corrections at high energies, and the
 c     relativistic corrections at high temperatures (T>1.e8 K)
 c
       implicit none
+      include 'omp_lib.h'
       integer nmaxp, np, itrans, iz
       real*8 xloc, sigma_t
       real*8 skn(nmaxp,itrans), ixloc, wp(nmaxp), theta(itrans)
@@ -13,6 +14,10 @@ c
       sigma_t = 6.65d-25   ! Thomson cross section
 c
       do iz = 1, itrans
+c$omp parallel num_threads(28)
+c$omp& shared(iz,nmaxp,wp,theta,skn,sigma_t)
+c$omp& private(np,xloc,ixloc)
+c$omp do
          do np=1, nmaxp
             xloc = 3.913894d-6*wp(np)
             ixloc = 1.d0/xloc
@@ -28,6 +33,8 @@ c
                call crsexact(theta(iz), wp(np)/511.d3, skn(np,iz))
             endif
          enddo
+c$omp end do
+c$omp end parallel
       enddo
 c
       return
