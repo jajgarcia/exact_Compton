@@ -8,10 +8,14 @@ c-----------------------------------------------------------------------
       integer status,unit,blocksize
       logical simple,extend
       integer bitpix,naxis,naxes(1)
-!Don't touch!
+!Dont touch!
+
 c Initialize status
       status=0
-c Delete the file if it already exists
+c Delete the file if it already exists<<<<<<< dev_angle
+12
+ 
+
       call deletefile(filename,status)
       if( status .gt. 0 )call printerror(status)
 c Get an unused Logical Unit Number to use to open the FITS file.
