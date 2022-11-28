@@ -12,9 +12,7 @@ c-----------------------------------------------------------------------
 
 c Initialize status
       status=0
-c Delete the file if it already exists<<<<<<< dev_angle
-12
- 
+c Delete the file if it already exists
 
       call deletefile(filename,status)
       if( status .gt. 0 )call printerror(status)
@@ -40,6 +38,8 @@ c Check for any error, and if so print out error messages.
       return
       end
 c-----------------------------------------------------------------------
+
+
 c-----------------------------------------------------------------------
       ! create fits file with one extension and  columns
       subroutine write_param(temp_dim, en_dim, temp, en, filename)
@@ -114,6 +114,8 @@ c Check for any error, and if so print out error messages.
       return
       end
 c-----------------------------------------------------------------------
+
+
 c-----------------------------------------------------------------------
 ! Add one HDU in the 3rd position
 !IMPORTANT: this routine leaves the fits file opened
@@ -179,6 +181,7 @@ c Check for any error, and if so print out error messages.
       end
 c-----------------------------------------------------------------------
 
+
 c-----------------------------------------------------------------------
       subroutine add_row_HDU(n, nmaxp, out_en_dim, out_en_ind,
      & kn_cross, srf, unit)
@@ -190,20 +193,6 @@ c-----------------------------------------------------------------------
       integer status,readwrite,hdutype, blocksize
       integer colnum,rownum
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @@ -232,7 +230,6 @@ subroutine add_row_HDU(n, nmaxp, out_en_dim, out_en_ind,
 
 c Initialize status
       status=0
@@ -242,21 +231,14 @@ c Check for any error, and if so print out error messages.
       return
       end
 c-----------------------------------------------------------------------
+
+
 c-----------------------------------------------------------------------
       subroutine deletefile(filename,status)
 C  A simple little routine to delete a FITS file
       implicit none
       integer status,unit,blocksize
       character*(*) filename
-
-
-
-
-
-
-
-
-
 
 C  Simply return if status is greater than zero
       if (status .gt. 0)return
@@ -283,6 +265,8 @@ C  Free the unit number for later reuse
       call ftfiou(unit, status)
       end
 c-----------------------------------------------------------------------
+
+
 c-----------------------------------------------------------------------
       subroutine printerror(status)
 C  This subroutine prints out the descriptive text corresponding to the
