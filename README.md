@@ -1,4 +1,6 @@
 # exact_Compton
+This is version 0.2.2 of the exact_Compton model.
+
 These routines compute the exact redistribution function due to Compton scattering
 
 Included is a driving program (driveSRF.f) which calls all pertinent routines.
@@ -8,7 +10,7 @@ The main output of the code is what we calle the "super redistribution function
 energy Ef, the SRF is defined for a set of initial photon energies Ei as:
 
          SRF(T,Ef,Ei) = IRF(Ef,Ei)/N(Ei)*skn(Ei)*dEi/Ei
-     
+
 where IRF(Ef,Ei) is in fact the inverse redistribution function for the Compton
 scattering of a photon from initial energy Ei to final energy Ef; N(Ei) is the
 normalization to ensure photon number conservation; and skn(Ei) is the
@@ -19,10 +21,3 @@ given temperature.  Only significant values of the SRF are actually written,
 i.e., when RF > limit.
 
 The output of this code is used by the XILLVER model.
-
-     Version: 0.2.1 - Wed Aug 21 19:13:39 PDT 2019
-
-     Authors: Javier Garcia (javier@caltech.edu)
-              Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
-                (see Garcia et al. 2020 in prep)
-	      With routines provided by J. Madej and A. Rozanska (see Madej et al. 2017).

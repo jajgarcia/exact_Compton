@@ -1,5 +1,5 @@
 ######################################################
-#Makefile for 
+#Makefile for
 # drive_SRF
 #
 #Variables:
@@ -28,7 +28,7 @@
 fc=gfortran
 flags=-O3
 #flags=-march=native -ffast-math -funroll-loops -O3 -finline-limit=600
-#flags= -O3 -fbounds-check 
+#flags= -O3 -fbounds-check
 #
 #libs= -lcfitsio
 name=drive_SRF
@@ -61,7 +61,3 @@ clean:
 all:
 	rm $(exec)
 	make $(exec)
-
-# Tue Dec 18 14:13:06 EST 2007
-# Javier Garcia
-# Modified Dec 28 T. Kallman

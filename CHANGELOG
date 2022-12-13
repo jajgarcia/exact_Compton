@@ -1,0 +1,32 @@
+Version: 0.2.2 - Jun 17, 2021
+Authors: Javier Garcia (javier@caltech.edu)
+        Add comments to the profile calculation +  minor corrections in README
+
+
+
+Version: 0.2.1 - Aug 21, 2019
+Authors: Javier Garcia (javier@caltech.edu)
+         Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
+           (see Garcia et al. 2020 in prep)
+   With routines provided by J. Madej and A. Rozanska (see Madej et al. 2017).
+   In drive_SRF: Fixed the NaNs printed in the output by setting df(1)=df(2) in enegrd.f
+
+
+
+Version: 0.2a
+Authors: Javier Garcia (javier@caltech.edu)
+         Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
+   Replaced the kleinni.f SR for scattxs.f, which computes the exact Compton
+   scatteting cross section including Klein-Nishina corrections at high energies
+   and relativistic corrections at high temperatures
+
+   The total cross section skn is now written in the output file for each
+   temperature and finel energy.
+
+
+
+Version: 0.2.1 - Aug 21, 2019
+
+Version: 0.2a - Apr 24, 2019
+
+Version: 0.1a - Tue Apr 23, 2019
