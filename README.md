@@ -8,7 +8,7 @@ The main output of the code is what we calle the "super redistribution function
 energy Ef, the SRF is defined for a set of initial photon energies Ei as:
 
          SRF(T,Ef,Ei) = IRF(Ef,Ei)/N(Ei)*skn(Ei)*dEi/Ei
-     
+
 where IRF(Ef,Ei) is in fact the inverse redistribution function for the Compton
 scattering of a photon from initial energy Ei to final energy Ef; N(Ei) is the
 normalization to ensure photon number conservation; and skn(Ei) is the
@@ -26,6 +26,6 @@ The output of this code is used by the XILLVER model.
               Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
                 (see Garcia et al. 2020 in prep)
 	      Jameson Dong (jdong2@caltech.edu)
-	      Isabel Franco (francog@caltech.edu)
+	      Isabel Franco (mfrancog@caltech.edu)
 	      Guglielmo Mastroserio (guglielmo.mastroserio@inaf.it)
 	      With routines provided by J. Madej and A. Rozanska (see Madej et al. 2017).
