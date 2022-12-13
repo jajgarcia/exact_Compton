@@ -1,5 +1,5 @@
 ######################################################
-#Makefile for 
+#Makefile for
 # drive_SRF
 #
 #Variables:
@@ -63,7 +63,3 @@ clean:
 all:
 	rm $(exec)
 	make $(exec)
-
-# Tue Dec 18 14:13:06 EST 2007
-# Javier Garcia
-# Modified Dec 28 T. Kallman
