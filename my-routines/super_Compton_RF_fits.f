@@ -1,6 +1,6 @@
 !-------------------------------------------------------------------------------------------------
       subroutine super_Compton_RF_fits(itrans, theta, nmaxp, wp, df,
-     & skn,  mgi, smit, agt)
+     1                                 skn,  mgi, smit, agt)
 c
 c     This routine writes a file with the super redistribution function (SRF) for Compton
 c     scatterting. For a given gas temperature T and final photon energy Ef, the SRF is

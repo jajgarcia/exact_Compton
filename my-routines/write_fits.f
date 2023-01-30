@@ -186,21 +186,6 @@ c-----------------------------------------------------------------------
       integer status,readwrite,hdutype, blocksize
       integer colnum,rownum
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @@ -232,7 +230,6 @@ subroutine add_row_HDU(n, nmaxp, out_en_dim, out_en_ind,
-
 c Initialize status
       status=0
 c$$$      blocksize = 1
@@ -244,15 +229,6 @@ C  A simple little routine to delete a FITS file
       implicit none
       integer status,unit,blocksize
       character*(*) filename
-
-
-
-
-
-
-
-
-
 
 C  Simply return if status is greater than zero
       if (status .gt. 0)return
