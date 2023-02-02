@@ -26,11 +26,11 @@
 #flags= -O3 -check bounds -fp-model source
 #
 fc=gfortran
-flags=-O3
+flags=-O3 -fallow-argument-mismatch
 #flags=-march=native -ffast-math -funroll-loops -O3 -finline-limit=600
 #flags= -O3 -fbounds-check
 #
-#libs= -lcfitsio
+libs= -lcfitsio
 name=drive_SRF
 code=$(name).f
 exec=$(name).x
@@ -40,9 +40,9 @@ myobjts= $(mysrc)/bk2.o                      \
          $(mysrc)/crsexact.o                 \
          $(mysrc)/enegrd.o                   \
          $(mysrc)/gaulegf.o           	     \
-         $(mysrc)/probab.o           	       \
+         $(mysrc)/probab.o      	     \
          $(mysrc)/scattxs.o                  \
-	 		 	 $(mysrc)/write_fits.o               \
+         $(mysrc)/write_fits.o               \
          $(mysrc)/super_Compton_RF.o         \
          $(mysrc)/super_Compton_RF_fits.o    \
 
