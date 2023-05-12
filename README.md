@@ -20,9 +20,12 @@ i.e., when RF > limit.
 
 The output of this code is used by the XILLVER model.
 
-     Version: 0.2.1 - Wed Aug 21 19:13:39 PDT 2019
+     Version: 0.4.0 - Wed Nov 23rd 14:15:39 PDT 2022
 
      Authors: Javier Garcia (javier@caltech.edu)
               Ekaterina Sokolova-Lapa (ekaterina.sokolova-lapa@fau.de)
                 (see Garcia et al. 2020 in prep)
+	      Jameson Dong (jdong2@caltech.edu)
+	      Isabel Franco (francog@caltech.edu)
+	      Guglielmo Mastroserio (guglielmo.mastroserio@inaf.it)
 	      With routines provided by J. Madej and A. Rozanska (see Madej et al. 2017).

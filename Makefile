@@ -22,13 +22,19 @@
 #flags=-O3 -parallel -no-prec-div -static-intel -xHost -fp-model source -mcmodel=large
 #libs=$(HEADAS)/lib/libcfitsio_3.27.so
 #
-#flags= -O3 -fp-model source
+#flags= -O3 -fp-model source -fopenmp
 #flags= -O3 -check bounds -fp-model source
 #
 fc=gfortran
-flags=-O3
+
+#flags=-O3
+#flags=-O3 -fallow-argument-mismatch -fopenmp
+flags=-O3 -fallow-argument-mismatch
+#flags=-Og -fcheck=all -Wextra -fimplicit-none -fbacktrace -fallow-argument-mismatch 
+libs =-lcfitsio
+
 #flags=-march=native -ffast-math -funroll-loops -O3 -finline-limit=600
-#flags= -O3 -fbounds-check 
+#flags= -O3 -fbounds-check
 #
 #libs= -lcfitsio
 name=drive_SRF
@@ -36,13 +42,15 @@ code=$(name).f
 exec=$(name).x
 mysrc=my-routines
 
-myobjts= $(mysrc)/bk2.o                 \
-         $(mysrc)/crsexact.o            \
-         $(mysrc)/enegrd.o              \
-         $(mysrc)/gaulegf.o           	\
-         $(mysrc)/probab.o           	\
-         $(mysrc)/scattxs.o             \
-         $(mysrc)/super_Compton_RF.o    \
+myobjts= $(mysrc)/bk2.o                      \
+         $(mysrc)/crsexact.o                 \
+         $(mysrc)/enegrd.o                   \
+         $(mysrc)/gaulegf.o           	     \
+         $(mysrc)/probab.o           	     \
+         $(mysrc)/scattxs.o                  \
+	       $(mysrc)/write_fits.o               \
+         $(mysrc)/super_Compton_RF.o         \
+         $(mysrc)/super_Compton_RF_fits.o    \
 
 
 # Compile xstar with all subroutines
